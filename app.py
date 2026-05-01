@@ -1,12 +1,18 @@
 import streamlit as st
-import joblib
 import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
 from profit import calculate_profit
 from weather import get_weather
 import matplotlib.pyplot as plt
 
-# Load model
-model = joblib.load("model.pkl")
+# ✅ Train model inside app (FIX for deployment)
+df_data = pd.read_csv("dataset.csv")
+
+X = df_data.drop("label", axis=1)
+y = df_data["label"]
+
+model = RandomForestClassifier(n_estimators=100)
+model.fit(X, y)
 
 # Page settings
 st.set_page_config(page_title="AgroAI Guardian", layout="centered")
@@ -57,7 +63,7 @@ if st.button("🔍 Predict Crop"):
     st.markdown("### 📊 Top Crop Suggestions")
     st.dataframe(df.head(3))
 
-    # 📈 Graph (FIXED VERSION)
+    # 📈 Graph
     st.markdown("### 📈 Prediction Confidence Graph")
 
     plt.figure(figsize=(6,4))
